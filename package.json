@@ -1,0 +1,26 @@
+{
+  "name": "cms-employee-tracker",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/WillBerner/CMS-Employee-Tracker.git"
+  },
+  "keywords": [],
+  "author": "Will Berner",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/WillBerner/CMS-Employee-Tracker/issues"
+  },
+  "homepage": "https://github.com/WillBerner/CMS-Employee-Tracker#readme",
+  "dependencies": {
+    "console.table": "^0.10.0",
+    "express": "^4.17.1",
+    "inquirer": "^8.1.2",
+    "mysql2": "^2.3.0"
+  }
+}
