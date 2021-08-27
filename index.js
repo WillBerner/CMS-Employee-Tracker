@@ -37,32 +37,38 @@ async function init() {
 async function determineUserInput(selectionInput) {
 
     switch (selectionInput) {
+
         case "Quit":
             return;
+
         case "Add a department":
             console.log("Add dept!");
             break;
+
         case "Add a role":
             console.log("Add role!");
             break;
+
         case "Add an employee":
             console.log("Add employee!");
             break;
+
         case "View all departments":
             console.log("View dept!");
             return await viewDepartments(db);
-            break;
+
         case "View all roles":
             console.log("View roles!");
             return await viewRoles(db);
-            break;
+
         case "View all employees":
             console.log("View employees!");
             return await viewEmployees(db);
-            break;
+
         case "Update an employee's role":
             console.log("Update employee!");
             break;
+            
         default:
             return new Error("Error: Selection is not supported!");
     }
