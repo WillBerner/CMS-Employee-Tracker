@@ -20,10 +20,10 @@ async function init() {
     do {
         
         // Gather user input
-        results = await inquirer.prompt(startQuestions)
+        results = await inquirer.prompt(startQuestions);
 
         // Determine what the user selected and take action
-        determineUserInput(results.selection);
+        await determineUserInput(results.selection);
 
     // Continue to ask questions until user quits
     } while (results.selection !== "Quit");
@@ -33,33 +33,32 @@ async function init() {
 }
 
 // Determines which choice the user made
-function determineUserInput(selectionInput) {
+async function determineUserInput(selectionInput) {
 
     switch (selectionInput) {
         case "Quit":
             return;
         case "Add a department":
-            console.log("Add Dept!");
+            console.log("Add dept!");
             break;
         case "Add a role":
             console.log("Add role!");
             break;
         case "Add an employee":
-
+            console.log("Add employee!");
             break;
         case "View all departments": 
-            viewDepartments(db);
-            console.log("View Dept!");
+            await viewDepartments(db);
+            console.log("View dept!");
             break;
         case "View all roles":
-
+            console.log("View roles!");
             break;
         case "View all employees":
             console.log("View employee!");
             break;
         case "Update an employee's role":
-            console.log("Update!");
-
+            console.log("Update employee!");
             break;
         default:
             return new Error("Error: Selection is not supported!"); 
