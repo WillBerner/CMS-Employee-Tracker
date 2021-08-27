@@ -9,7 +9,7 @@ import { db } from "./config/connection.js";
 import { viewDepartments, viewRoles, viewEmployees } from "./db_helpers/view.js";
 
 // Importing questions from external file
-import { startQuestions }  from "./questions/startQuestions.js" ;
+import { startQuestions } from "./questions/startQuestions.js";
 
 // Main function to start the application up
 async function init() {
@@ -19,14 +19,14 @@ async function init() {
 
     // Always ask at least one question
     do {
-        
+
         // Gather user input
         results = await inquirer.prompt(startQuestions);
 
         // Determine what the user selected and take action
         await determineUserInput(results.selection);
 
-    // Continue to ask questions until user quits
+        // Continue to ask questions until user quits
     } while (results.selection !== "Quit");
 
     // End the database connection to kill the process
@@ -48,23 +48,23 @@ async function determineUserInput(selectionInput) {
         case "Add an employee":
             console.log("Add employee!");
             break;
-        case "View all departments": 
-            await viewDepartments(db);
+        case "View all departments":
             console.log("View dept!");
+            return await viewDepartments(db);
             break;
         case "View all roles":
-            await viewRoles(db);
             console.log("View roles!");
+            return await viewRoles(db);
             break;
         case "View all employees":
-            await viewEmployees(db);
             console.log("View employees!");
+            return await viewEmployees(db);
             break;
         case "Update an employee's role":
             console.log("Update employee!");
             break;
         default:
-            return new Error("Error: Selection is not supported!"); 
+            return new Error("Error: Selection is not supported!");
     }
 
     return;
