@@ -1,8 +1,11 @@
-// Importing inquirer for gathering user input
-import inquirer from "inquirer" ;
+// Importing inquirer for gathering user input and console.table to display data
+import inquirer from "inquirer";
+import cTable from "console.table";
 
 // Importing db from external file
 import { db } from "./config/connection.js";
+
+import { viewDepartments } from "./db_helpers/view.js";
 
 // Importing questions from external file
 import { startQuestions }  from "./questions/startQuestions.js" ;
@@ -25,8 +28,8 @@ async function init() {
     // Continue to ask questions until user quits
     } while (results.selection !== "Quit");
 
-    // Close the database connection to kill the process
-    db.close();
+    // End the database connection to kill the process
+    db.end();
 }
 
 // Determines which choice the user made
@@ -45,6 +48,7 @@ function determineUserInput(selectionInput) {
 
             break;
         case "View all departments": 
+            viewDepartments(db);
             console.log("View Dept!");
             break;
         case "View all roles":

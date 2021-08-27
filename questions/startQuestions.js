@@ -10,6 +10,7 @@ export const startQuestions = [
          "Add a role",
          "Add an employee",
          "Update an employee's role",
-         "Quit"]
+         "Quit"],
+         loop: false
     }
 ];
