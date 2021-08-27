@@ -1,9 +1,10 @@
 // Importing inquirer for gathering user input
 import inquirer from "inquirer" ;
 
+// Importing db from external file
 import { db } from "./config/connection.js";
 
-// Import questions from external file
+// Importing questions from external file
 import { startQuestions }  from "./questions/startQuestions.js" ;
 
 // Main function to start the application up
@@ -18,17 +19,13 @@ async function init() {
         // Gather user input
         results = await inquirer.prompt(startQuestions)
 
-            // Return user input data
-            .then(data => data)
-
-            // Log any errors
-            .catch(error => console.log(error));
-
+        // Determine what the user selected and take action
         determineUserInput(results.selection);
 
     // Continue to ask questions until user quits
     } while (results.selection !== "Quit");
 
+    // Close the database connection to kill the process
     db.close();
 }
 
