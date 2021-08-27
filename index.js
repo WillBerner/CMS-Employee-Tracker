@@ -26,11 +26,18 @@ async function init() {
         // Determine what the user selected and take action
         await determineUserInput(results.selection);
 
+        await sleep(500);
+
         // Continue to ask questions until user quits
     } while (results.selection !== "Quit");
 
     // End the database connection to kill the process
     db.end();
+}
+
+// Hacky fix wait for more user input until after table has been displayed
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 // Determines which choice the user made
@@ -68,7 +75,7 @@ async function determineUserInput(selectionInput) {
         case "Update an employee's role":
             console.log("Update employee!");
             break;
-            
+
         default:
             return new Error("Error: Selection is not supported!");
     }

@@ -1,4 +1,4 @@
-// Importing 
+// Importing mysql2 to interface with mysql
 import mysql from "mysql2" ;
 
 // Create and export the db after creating a connection
