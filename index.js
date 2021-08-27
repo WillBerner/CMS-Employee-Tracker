@@ -1,6 +1,8 @@
 // Importing inquirer for gathering user input
 import inquirer from "inquirer" ;
 
+import { db } from "./config/connection.js";
+
 // Import questions from external file
 import { startQuestions }  from "./questions/startQuestions.js" ;
 
@@ -27,6 +29,7 @@ async function init() {
     // Continue to ask questions until user quits
     } while (results.selection !== "Quit");
 
+    db.close();
 }
 
 // Determines which choice the user made
