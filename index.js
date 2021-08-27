@@ -5,7 +5,8 @@ import cTable from "console.table";
 // Importing db from external file
 import { db } from "./config/connection.js";
 
-import { viewDepartments } from "./db_helpers/view.js";
+// Importing table viewing helper functions
+import { viewDepartments, viewRoles, viewEmployees } from "./db_helpers/view.js";
 
 // Importing questions from external file
 import { startQuestions }  from "./questions/startQuestions.js" ;
@@ -52,10 +53,12 @@ async function determineUserInput(selectionInput) {
             console.log("View dept!");
             break;
         case "View all roles":
+            await viewRoles(db);
             console.log("View roles!");
             break;
         case "View all employees":
-            console.log("View employee!");
+            await viewEmployees(db);
+            console.log("View employees!");
             break;
         case "Update an employee's role":
             console.log("Update employee!");
