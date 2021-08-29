@@ -7,6 +7,7 @@ import { db } from "./config/connection.js";
 
 // Importing table viewing helper functions
 import { viewDepartments, viewRoles, viewEmployees } from "./db_helpers/view.js";
+import { addDepartment, addRole, addEmployee } from "./db_helpers/add.js";
 
 // Importing questions from external file
 import { startQuestions } from "./questions/startQuestions.js";
@@ -49,27 +50,21 @@ async function determineUserInput(selectionInput) {
             return;
 
         case "Add a department":
-            console.log("Add dept!");
-            break;
+            return await addDepartment(db, "SomeDepartment");
 
         case "Add a role":
-            console.log("Add role!");
-            break;
+            return await addRole(db, ["Lawyer", "100000", 4]);
 
         case "Add an employee":
-            console.log("Add employee!");
-            break;
+            return await addEmployee(db, ["Jimbo", "Haller", 7, null]);
 
         case "View all departments":
-            console.log("View dept!");
             return await viewDepartments(db);
 
         case "View all roles":
-            console.log("View roles!");
             return await viewRoles(db);
 
         case "View all employees":
-            console.log("View employees!");
             return await viewEmployees(db);
 
         case "Update an employee's role":
