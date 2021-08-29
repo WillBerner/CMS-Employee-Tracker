@@ -10,7 +10,8 @@ import { viewDepartments, viewRoles, viewEmployees } from "./db_helpers/view.js"
 import { addDepartment, addRole, addEmployee } from "./db_helpers/add.js";
 
 // Importing questions from external file
-import { startQuestions } from "./questions/startQuestions.js";
+import { starterQuestions } from "./questions/starterQuestions.js";
+import { addDepartmentQuestion, addRoleQuestions, addEmployeesQuestions } from "./questions/addQuestions.js";
 
 // Main function to start the application up
 async function init() {
@@ -22,7 +23,7 @@ async function init() {
     do {
 
         // Gather user input
-        results = await inquirer.prompt(startQuestions);
+        results = await inquirer.prompt(starterQuestions);
 
         // Determine what the user selected and take action
         await determineUserInput(results.selection);

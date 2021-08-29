@@ -1,4 +1,4 @@
-export const startQuestions = [
+export const starterQuestions = [
     {
         name: "selection",
         type: "list",
