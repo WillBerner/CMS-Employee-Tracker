@@ -8,19 +8,19 @@ export const addDepartmentQuestion = [
 
 export const addRoleQuestions = [
     {
-        name: "deptName",
-        type: "input",
-        message: "To which department would you like to add this role?"
-    },
-    {
         name: "roleName",
         type: "input",
-        message: "What role would you like to add?"
+        message: "What is the name of the role?"
     },
     {
         name: "salary",
         type: "input",
-        message: "What is the salary for this role?"
+        message: "What is the salary of the role?"
+    },
+    {
+        name: "deptName",
+        type: "input",
+        message: "To which department would you like to add this role?"
     }
 ];
 
