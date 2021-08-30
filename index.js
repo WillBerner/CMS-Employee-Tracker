@@ -83,7 +83,7 @@ async function promptAddEmployee() {
     let answer = await inquirer.prompt(addEmployeesQuestions[0]);
 
     answer.role_id = addEmployeesQuestions[1].find(role => role.title === answer.employeeRole).id;
-    
+
     answer.manager_id = (answer.employeeManager === "None") ? null : addEmployeesQuestions[2].find(manager => manager.name === answer.employeeManager).id;
 
     console.log(answer);
@@ -140,10 +140,10 @@ async function determineUserInput(selectionInput) {
     }
 }
 
-// Generates role questions, as the choices for which department to add to can be changed through the program running
+// Generates role questions based on current departments available
 async function generateRoleQuestions() {
 
-    // First two questions are always the same
+    // First two questions are static
     let roleQuestions = [
         {
             name: "roleName",
@@ -157,7 +157,7 @@ async function generateRoleQuestions() {
         }
     ];
 
-    // Query the database for currently available departments to add a role to
+    // Query the database for currently available departments
     return new Promise((resolve, reject) => {
 
         // Get department names to create inquirer prompt
@@ -169,7 +169,7 @@ async function generateRoleQuestions() {
                 return reject(err)
             } else {
 
-                // Get the current departments in a format to add to inquirer's prompt
+                // Format current departments to add to inquirer's prompt choices
                 let departmentChoices = JSON.parse(JSON.stringify(rows))
                     .map(object => object.name);
 
@@ -191,8 +191,10 @@ async function generateRoleQuestions() {
 
 }
 
+// Generates employee questions based on current roles and managers available
 async function generateEmployeeQuestions() {
 
+    // First two questions are static
     let employeeQuestions = [
         {
             name: "firstName",
@@ -205,37 +207,47 @@ async function generateEmployeeQuestions() {
             message: "What is the employee's last name?"
         }];
 
+    // Query the database twice to get currently available roles and managers
     return new Promise((resolve, reject) => {
 
+        // Get roles and role ids from the database
         db.query("SELECT id, title FROM role", (err, roleRows) => {
 
+            // If anything's down, log the error and reject the promise
             if (err) {
                 console.log(err);
                 reject(err);
             } else {
 
+                // Get manager and manager ids from the database
                 db.query("SELECT id, CONCAT(first_name, ' ', last_name) AS name from employee where employee.manager_id IS NULL", (err, managerRows) => {
 
+                    // If anything's down, log the error and reject the promise
                     if (err) {
                         console.log(err);
                         reject(err);
                     } else {
 
+                        // Get current roles and role ids to use in inserting to database after prompting
                         let roleData = JSON.parse(JSON.stringify(roleRows));
+                        // Format current roles to add to inquirer's prompt choices 
                         let roleChoices = roleData.map(role => role.title);
 
+                        // Get current managers and manager ids to use in inserting to database after prompting
                         let managerData = JSON.parse(JSON.stringify(managerRows));
-
+                        // Format current managers to add to inquirer's prompt choices 
                         let managerChoices = managerData.map(manager => manager.name);
+                        
+                        // Add an option to have no manager
                         managerChoices.push('None');
 
+                        // Create last two questions dynamically based on current roles and managers
                         employeeQuestions.push({
                             name: "employeeRole",
                             type: "list",
                             message: "What is the employee's role?",
                             choices: roleChoices
                         });
-
                         employeeQuestions.push({
                             name: "employeeManager",
                             type: "list",
@@ -243,8 +255,8 @@ async function generateEmployeeQuestions() {
                             choices: managerChoices
                         });
 
+                        // Return both questions to ask as well as id info on the currently available roles and managers
                         resolve([employeeQuestions, roleData, managerData]);
-
                     }
 
                 })
