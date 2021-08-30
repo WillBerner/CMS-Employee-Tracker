@@ -344,7 +344,6 @@ async function determineUserInput(selectionInput) {
         // Updating the role of an employee
         case "Update an employee's role":
             let employeeToUpdate = await promptUpdateEmployee();
-
             return updateEmployee(db, [employeeToUpdate.role_id, employeeToUpdate.employee_id]);
 
         // If somehow an unsupported selection in passed through, throw an error
