@@ -21,3 +21,12 @@ export const addEmployee = async (db, newEmployee) => {
         console.log("Added new employee successfully.");
     })
 }
+
+export const updateEmployee = async (db, employee) => {
+    db.query("UPDATE employee SET role_id = ? WHERE id = ?", employee, (err, result) => {
+        if (err) { console.log(err); return; }
+
+        console.log("Updated employee role successfully.")
+
+    });
+}

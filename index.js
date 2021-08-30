@@ -7,7 +7,7 @@ import { db } from "./config/connection.js";
 
 // Importing table viewing helper functions
 import { viewDepartments, viewRoles, viewEmployees } from "./db_helpers/view.js";
-import { addDepartment, addRole, addEmployee } from "./db_helpers/add.js";
+import { addDepartment, addRole, addEmployee, updateEmployee } from "./db_helpers/add.js";
 
 // Importing questions from external file
 import { starterQuestions } from "./questions/starterQuestions.js";
@@ -86,58 +86,22 @@ async function promptAddEmployee() {
 
     answer.manager_id = (answer.employeeManager === "None") ? null : addEmployeesQuestions[2].find(manager => manager.name === answer.employeeManager).id;
 
-    console.log(answer);
-
     return answer;
 
 }
 
-// Determines which choice the user made
-async function determineUserInput(selectionInput) {
+async function promptUpdateEmployee() {
 
-    // Take action based on what user wants to do
-    switch (selectionInput) {
+    let updateEmployeeQuestions = await generateEmployeeUpdateQuestions();
 
-        // If user wants to quit, return immediately
-        case "Quit":
-            return;
+    let answer = await inquirer.prompt(updateEmployeeQuestions[0]);
 
-        // Adding a new department
-        case "Add a department":
-            let departmentToAdd = await promptAddDept();
-            return await addDepartment(db, departmentToAdd);
+    answer.employee_id = updateEmployeeQuestions[1].find(employee => employee.fullname === answer.employeeName).id;
 
-        // Adding a new role
-        case "Add a role":
-            let roleToAdd = await promptAddRole();
-            return await addRole(db, [roleToAdd.roleName, roleToAdd.salary, roleToAdd.dept_id]);
+    answer.role_id = updateEmployeeQuestions[2].find(role => role.title === answer.role).id;
 
-        // Adding a new employee
-        case "Add an employee":
-            let employeeToAdd = await promptAddEmployee();
-            return await addEmployee(db, [employeeToAdd.firstName, employeeToAdd.lastName, employeeToAdd.role_id, employeeToAdd.manager_id]);
+    return answer;
 
-        // Viewing all departments
-        case "View all departments":
-            return await viewDepartments(db);
-
-        // Viewing all roles
-        case "View all roles":
-            return await viewRoles(db);
-
-        // Viewing all employees
-        case "View all employees":
-            return await viewEmployees(db);
-
-        // Updating the role of an employee
-        case "Update an employee's role":
-            console.log("Update employee!");
-            break;
-
-        // If somehow an unsupported selection in passed through, throw an error
-        default:
-            return new Error("Error: Selection is not supported!");
-    }
 }
 
 // Generates role questions based on current departments available
@@ -266,6 +230,104 @@ async function generateEmployeeQuestions() {
             }
         });
     });
+}
+
+async function generateEmployeeUpdateQuestions() {
+
+    return new Promise((resolve, reject) => {
+
+        db.query("SELECT id, CONCAT(first_name, ' ', last_name) as fullname FROM employee", (err, employeeRows) => {
+
+            if (err) {
+                console.log(err);
+                reject(err);
+            } else {
+
+                db.query("SELECT id, title FROM role", (err, roleRows) => {
+
+                    if (err) {
+                        console.log(err);
+                        reject(err);
+                    } else {
+
+                        let employeeData = JSON.parse(JSON.stringify(employeeRows));
+                        let employeeChoices = employeeData.map(employee => employee.fullname);
+
+                        let roleData = JSON.parse(JSON.stringify(roleRows));
+                        let roleChoices = roleData.map(role => role.title);
+
+                        let updateQuestions = [
+                            {
+                                name: "employeeName",
+                                type: "list",
+                                message: "Which employee's role do you want to update?",
+                                choices: employeeChoices,
+                                loop: false
+                            },
+                            {
+                                name: "role",
+                                type: "list",
+                                message: "To which role do you want to assign to the selected employee?",
+                                choices: roleChoices,
+                                loop: false
+                            }
+                        ];
+
+                        resolve([updateQuestions, employeeData, roleData]);
+                    }
+                });
+            }
+        });
+    });
+}
+
+// Determines which choice the user made
+async function determineUserInput(selectionInput) {
+
+    // Take action based on what user wants to do
+    switch (selectionInput) {
+
+        // If user wants to quit, return immediately
+        case "Quit":
+            return;
+
+        // Adding a new department
+        case "Add a department":
+            let departmentToAdd = await promptAddDept();
+            return await addDepartment(db, departmentToAdd);
+
+        // Adding a new role
+        case "Add a role":
+            let roleToAdd = await promptAddRole();
+            return await addRole(db, [roleToAdd.roleName, roleToAdd.salary, roleToAdd.dept_id]);
+
+        // Adding a new employee
+        case "Add an employee":
+            let employeeToAdd = await promptAddEmployee();
+            return await addEmployee(db, [employeeToAdd.firstName, employeeToAdd.lastName, employeeToAdd.role_id, employeeToAdd.manager_id]);
+
+        // Viewing all departments
+        case "View all departments":
+            return await viewDepartments(db);
+
+        // Viewing all roles
+        case "View all roles":
+            return await viewRoles(db);
+
+        // Viewing all employees
+        case "View all employees":
+            return await viewEmployees(db);
+
+        // Updating the role of an employee
+        case "Update an employee's role":
+            let employeeToUpdate = await promptUpdateEmployee();
+
+            return updateEmployee(db, [employeeToUpdate.role_id, employeeToUpdate.employee_id]);
+
+        // If somehow an unsupported selection in passed through, throw an error
+        default:
+            return new Error("Error: Selection is not supported!");
+    }
 }
 
 // Start the application up
