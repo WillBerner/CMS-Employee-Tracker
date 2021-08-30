@@ -12,7 +12,7 @@ import { addDepartment, addRole, addEmployee, updateEmployee } from "./db_helper
 // Importing questions from external file
 import { starterQuestions } from "./questions/starterQuestions.js";
 
-// Hacky fix wait for more user input until after table has been displayed
+// Hacky fix wait for more user input until after table has been displayed rather than using mysql2's promise() functionality
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
@@ -343,6 +343,7 @@ async function init() {
         await determineUserInput(results.selection);
 
         // Hacky fix to force process to wait until table info is displayed before prompting again
+        // Used instead of mysql2's promise() functionality, could be refactored eventually.
         await sleep(500);
 
         // Continue to ask questions until user quits
