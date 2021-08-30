@@ -12,31 +12,6 @@ import { addDepartment, addRole, addEmployee, updateEmployee } from "./db_helper
 // Importing questions from external file
 import { starterQuestions } from "./questions/starterQuestions.js";
 
-// Main function to start the application up
-async function init() {
-
-    // Will hold whatever action the user wants to take
-    let results = null;
-
-    // Always ask at least one question
-    do {
-
-        // Gather user input
-        results = await inquirer.prompt(starterQuestions);
-
-        // Determine what the user selected and take action
-        await determineUserInput(results.selection);
-
-        // Hacky fix to force process to wait until table info is displayed before prompting again
-        await sleep(500);
-
-        // Continue to ask questions until user quits
-    } while (results.selection !== "Quit");
-
-    // End the database connection to kill the process
-    db.end();
-}
-
 // Hacky fix wait for more user input until after table has been displayed
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
@@ -350,6 +325,31 @@ async function determineUserInput(selectionInput) {
         default:
             return new Error("Error: Selection is not supported!");
     }
+}
+
+// Main function to start the application up
+async function init() {
+
+    // Will hold whatever action the user wants to take
+    let results = null;
+
+    // Always ask at least one question
+    do {
+
+        // Gather user input
+        results = await inquirer.prompt(starterQuestions);
+
+        // Determine what the user selected and take action
+        await determineUserInput(results.selection);
+
+        // Hacky fix to force process to wait until table info is displayed before prompting again
+        await sleep(500);
+
+        // Continue to ask questions until user quits
+    } while (results.selection !== "Quit");
+
+    // End the database connection to kill the process
+    db.end();
 }
 
 // Start the application up
