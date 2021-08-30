@@ -178,7 +178,8 @@ async function generateRoleQuestions() {
                     name: "deptName",
                     type: "list",
                     message: "Which department does this role belong to?",
-                    choices: departmentChoices
+                    choices: departmentChoices,
+                    loop: false
                 });
 
                 // Return both the questions to ask as well as the currently available departments
@@ -220,7 +221,7 @@ async function generateEmployeeQuestions() {
             } else {
 
                 // Get manager and manager ids from the database
-                db.query("SELECT id, CONCAT(first_name, ' ', last_name) AS name from employee where employee.manager_id IS NULL", (err, managerRows) => {
+                db.query("SELECT id, CONCAT(first_name, ' ', last_name) AS name from employee", (err, managerRows) => {
 
                     // If anything's down, log the error and reject the promise
                     if (err) {
@@ -237,7 +238,7 @@ async function generateEmployeeQuestions() {
                         let managerData = JSON.parse(JSON.stringify(managerRows));
                         // Format current managers to add to inquirer's prompt choices 
                         let managerChoices = managerData.map(manager => manager.name);
-                        
+
                         // Add an option to have no manager
                         managerChoices.push('None');
 
@@ -246,13 +247,15 @@ async function generateEmployeeQuestions() {
                             name: "employeeRole",
                             type: "list",
                             message: "What is the employee's role?",
-                            choices: roleChoices
+                            choices: roleChoices,
+                            loop: false
                         });
                         employeeQuestions.push({
                             name: "employeeManager",
                             type: "list",
                             message: "Who is the employee's manager?",
-                            choices: managerChoices
+                            choices: managerChoices,
+                            loop: false
                         });
 
                         // Return both questions to ask as well as id info on the currently available roles and managers
