@@ -6,8 +6,8 @@ Employee Tracker is a content managment system for keeping track of departments,
 
 ## Table of Contents
    
-* [Usage Instructions](#usage-instructions)
 * [Installation Instructions](#installation-instructions)
+* [Usage Instructions](#usage-instructions)
 * [Demo](#demo)
 * [Contributions](#contributions)
 * [Questions](#questions)
