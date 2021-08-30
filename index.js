@@ -5,7 +5,7 @@ import cTable from "console.table";
 // Importing db from external file
 import { db } from "./config/connection.js";
 
-// Importing table viewing helper functions
+// Importing table viewing and adding/updating helper functions
 import { viewDepartments, viewRoles, viewEmployees } from "./db_helpers/view.js";
 import { addDepartment, addRole, addEmployee, updateEmployee } from "./db_helpers/add.js";
 
@@ -78,28 +78,39 @@ async function promptAddRole() {
 // Get user input for what employee to add
 async function promptAddEmployee() {
 
+    // Get dynamically generated questions to prompt the user with, as different employees/roles/departments may have been added
     let addEmployeesQuestions = await generateEmployeeQuestions();
 
+    // Prompt the user for name/role/manager based on current data in the database
     let answer = await inquirer.prompt(addEmployeesQuestions[0]);
 
+    // Get the id of the role in order to insert it into the database
     answer.role_id = addEmployeesQuestions[1].find(role => role.title === answer.employeeRole).id;
 
+    // Get the id of the employee's manager (or leave it as null) to insert it into the database
     answer.manager_id = (answer.employeeManager === "None") ? null : addEmployeesQuestions[2].find(manager => manager.name === answer.employeeManager).id;
 
+    // return data to insert into database
     return answer;
 
 }
 
+// Get user input for which employee to update, and what role to update them to
 async function promptUpdateEmployee() {
 
+    // Get dynamically generated questions to prompt the user with, as different employees/roles/departments may have been added
     let updateEmployeeQuestions = await generateEmployeeUpdateQuestions();
 
+    // Prompt the user for name/role based on current data in the database
     let answer = await inquirer.prompt(updateEmployeeQuestions[0]);
 
+    // Get the id of the employee in order to update them in the database
     answer.employee_id = updateEmployeeQuestions[1].find(employee => employee.fullname === answer.employeeName).id;
 
+    // Get the id of the role in order to update the employee to the selected role
     answer.role_id = updateEmployeeQuestions[2].find(role => role.title === answer.role).id;
 
+    // return data to update the database with
     return answer;
 
 }
@@ -232,30 +243,41 @@ async function generateEmployeeQuestions() {
     });
 }
 
+// Generates employee update questions based on current roles and employees
 async function generateEmployeeUpdateQuestions() {
 
+    // Query the database twice to get currently available employees and roles
     return new Promise((resolve, reject) => {
 
+        // Get employees and their ids from the database
         db.query("SELECT id, CONCAT(first_name, ' ', last_name) as fullname FROM employee", (err, employeeRows) => {
 
+            // If anything's down, log the error and reject the promise
             if (err) {
                 console.log(err);
                 reject(err);
             } else {
 
+                // Get roles and their ids from the database
                 db.query("SELECT id, title FROM role", (err, roleRows) => {
 
+                    // If anything's down, log the error and reject the promise
                     if (err) {
                         console.log(err);
                         reject(err);
                     } else {
 
+                        // Get current employees and employee ids to use in updating the database after prompting
                         let employeeData = JSON.parse(JSON.stringify(employeeRows));
+                        // Format current employees to add to inquirer's prompt choices 
                         let employeeChoices = employeeData.map(employee => employee.fullname);
 
+                        // Get current roles and role ids to use in updating the database after prompting
                         let roleData = JSON.parse(JSON.stringify(roleRows));
+                        // Format current roles to add to inquirer's prompt choices 
                         let roleChoices = roleData.map(role => role.title);
 
+                        // Create questions dynamically based on current employees and roles
                         let updateQuestions = [
                             {
                                 name: "employeeName",
@@ -273,6 +295,7 @@ async function generateEmployeeUpdateQuestions() {
                             }
                         ];
 
+                        // Return both questions to ask as well as id info on the currently available employees and roles
                         resolve([updateQuestions, employeeData, roleData]);
                     }
                 });
