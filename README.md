@@ -1,7 +1,7 @@
 # CMS-Employee-Tracker
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-Employee Tracker is a content managment system for keeping track of departments, positions (roles), and employees for any organization. The application is built with Node.js and MySQL and makes use of mysql2, Inquirer, and console.table npm packages.
+Employee Tracker is a content management system for keeping track of departments, positions (roles), and employees for any organization. The application is built with Node.js and MySQL and makes use of mysql2, Inquirer, and console.table npm packages.
 
 
 ## Table of Contents
